@@ -1,18 +1,12 @@
 import '../../domain/entities/user_entity.dart';
 import '../../domain/repository/user_repository.dart';
-import '../models/user_model.dart';
 import '../../helper/database_helper.dart';
+import '../models/user_model.dart';
 
 class UserRepositoryImpl implements UserRepository {
   final DatabaseHelper dbHelper;
-  UserRepositoryImpl(this.dbHelper);
 
-  @override
-  Future<List<UserEntity>> getAllUsers() async {
-    final db = await dbHelper.database;
-    final List<Map<String, dynamic>> maps = await db.query('users');
-    return maps.map((userMap) => UserModel.fromMap(userMap)).toList();
-  }
+  UserRepositoryImpl(this.dbHelper);
 
   @override
   Future<void> addUser(UserEntity user) async {
@@ -21,6 +15,8 @@ class UserRepositoryImpl implements UserRepository {
       id: user.id,
       name: user.name,
       email: user.email,
+      noTelpon: user.noTelpon,
+      alamat: user.alamat,
     );
     await db.insert('users', userModel.toMap());
   }
@@ -32,6 +28,8 @@ class UserRepositoryImpl implements UserRepository {
       id: user.id,
       name: user.name,
       email: user.email,
+      noTelpon: user.noTelpon,
+      alamat: user.alamat,
     );
     await db.update(
       'users',
@@ -45,5 +43,15 @@ class UserRepositoryImpl implements UserRepository {
   Future<void> deleteUser(String id) async {
     final db = await dbHelper.database;
     await db.delete('users', where: 'id = ?', whereArgs: [id]);
+  }
+
+  // Ubah nama metode dari getUsers menjadi getAllUsers sesuai pesan error
+  @override
+  Future<List<UserEntity>> getAllUsers() async {
+    final db = await dbHelper.database;
+    final List<Map<String, dynamic>> maps = await db.query('users');
+    return List.generate(maps.length, (i) {
+      return UserModel.fromMap(maps[i]);
+    });
   }
 }
