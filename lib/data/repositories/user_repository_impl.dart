@@ -25,4 +25,25 @@ class UserRepositoryImpl implements UserRepository {
     await db.insert('users', userModel.toMap());
   }
 
-  
+  @override
+  Future<void> updateUser(UserEntity user) async {
+    final db = await dbHelper.database;
+    final userModel = UserModel(
+      id: user.id,
+      name: user.name,
+      email: user.email,
+    );
+    await db.update(
+      'users',
+      userModel.toMap(),
+      where: 'id = ?',
+      whereArgs: [user.id],
+    );
+  }
+
+  @override
+  Future<void> deleteUser(String id) async {
+    final db = await dbHelper.database;
+    await db.delete('users', where: 'id = ?', whereArgs: [id]);
+  }
+}
