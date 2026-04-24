@@ -14,3 +14,23 @@ class HomePage extends StatelessWidget {
       appBar: AppBar(title: const Text("Daftar User")),
       body: BlocBuilder<UserBloc, UserState>(
         builder: (context, state) {
+          if (state is UserLoading) return const Center(child: CircularProgressIndicator());
+          if (state is UserLoaded && state.users.isNotEmpty) {
+            return ListView.builder(
+              itemCount: state.users.length,
+              itemBuilder: (context, index) {
+                final user = state.users[index];
+                return ListTile(
+                  title: Text(user.name),
+                  subtitle: Text(user.email),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.edit, color: Colors.blue),
+                        onPressed: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => UserFormPage(user: user)),
+                        ),
+                      ),
+                     
