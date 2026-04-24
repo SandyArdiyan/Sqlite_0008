@@ -1,0 +1,28 @@
+import '../../domain/entities/user_entity.dart';
+import '../../domain/repository/user_repository.dart';
+import '../models/user_model.dart';
+import '../../helper/database_helper.dart';
+
+class UserRepositoryImpl implements UserRepository {
+  final DatabaseHelper dbHelper;
+  UserRepositoryImpl(this.dbHelper);
+
+  @override
+  Future<List<UserEntity>> getAllUsers() async {
+    final db = await dbHelper.database;
+    final List<Map<String, dynamic>> maps = await db.query('users');
+    return maps.map((userMap) => UserModel.fromMap(userMap)).toList();
+  }
+
+  @override
+  Future<void> addUser(UserEntity user) async {
+    final db = await dbHelper.database;
+    final userModel = UserModel(
+      id: user.id,
+      name: user.name,
+      email: user.email,
+    );
+    await db.insert('users', userModel.toMap());
+  }
+
+  
