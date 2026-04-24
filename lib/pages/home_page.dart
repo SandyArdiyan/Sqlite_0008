@@ -33,4 +33,26 @@ class HomePage extends StatelessWidget {
                           MaterialPageRoute(builder: (_) => UserFormPage(user: user)),
                         ),
                       ),
-                     
+                      IconButton(
+                        icon: const Icon(Icons.delete, color: Colors.red),
+                        onPressed: () => context.read<UserBloc>().add(DeleteUserEvent(user.id)),
+                      ),
+                    ],
+                  ),
+                );
+              }
+            );
+          }
+          return const Center(child: Text("Belum ada user. Klik + untuk menambah."));
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const UserFormPage()),
+        ),
+        child: const Icon(Icons.add),
+      ),
+    );
+  }
+}
